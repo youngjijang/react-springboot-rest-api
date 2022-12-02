@@ -25,14 +25,16 @@ public class ProductJdbcRepository implements ProductRepository {
     public ProductCategory createProductCategory(String category) {
         String sql = "INSERT INTO product_category(category) VALUES(:category)";
         String findSql = "SELECT * FROM product_category WHERE category = :category ";
-        var update = jdbcTemplate.update(sql, Collections.singletonMap("category",category));
+        var update = jdbcTemplate.update(sql, Collections.singletonMap("category", category));
         if (update != 1) throw new RuntimeException("Nothing was inserted!");
-        return jdbcTemplate.queryForObject(findSql,Collections.singletonMap("category",category),categoryRowMapper);
+        return jdbcTemplate.queryForObject(findSql, Collections.singletonMap("category", category), categoryRowMapper);
     }
 
     @Override
     public List<ProductCategory> findAllCategory() {
-        return null;
+        String sql = "SELECT * FROM product_category";
+        List<ProductCategory> categories = jdbcTemplate.query(sql, categoryRowMapper);
+        return categories;
     }
 
     @Override
@@ -51,15 +53,15 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public void deleteProduct(UUID productId) {
-        String sql = "DELETE FROM products WHERE product_id = UUID_TO_BIN(:productId))";
-        jdbcTemplate.update(sql, Collections.singletonMap("productId", productId));
+        String sql = "DELETE FROM products WHERE product_id = UUID_TO_BIN(:productId)";
+        jdbcTemplate.update(sql, Collections.singletonMap("productId", productId.toString().getBytes()));
     }
 
     @Override
     public Optional<Product> findById(UUID productId) {
         String sql = "SELECT p.product_id,p.name,p.price, p.total_amount,p.description, pc.code,pc.category FROM products p JOIN product_category pc on pc.code = p.category_code WHERE p.product_id = UUID_TO_BIN(:productId) ";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, Collections.singletonMap("productId", productId), productRowMapper));
+            return Optional.of(jdbcTemplate.queryForObject(sql, Collections.singletonMap("productId", productId.toString().getBytes()), productRowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -73,14 +75,14 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public void updateTotalAmount(Product product) {
-        String sql = "UPDATE products SET total_amount = :totalAmount WHERE product_id = :UUID_TO_BIN(:productId))";
+        String sql = "UPDATE products SET total_amount = :totalAmount WHERE product_id = UUID_TO_BIN(:productId)";
         var update = jdbcTemplate.update(sql, toParamMap(product));
         if (update != 1) throw new RuntimeException("Nothing was updated!");
     }
 
     @Override
     public void updateDescription(Product product) {
-        String sql = "UPDATE products SET description = :description WHERE product_id = :UUID_TO_BIN(:productId))";
+        String sql = "UPDATE products SET description = :description WHERE product_id = UUID_TO_BIN(:productId)";
         var update = jdbcTemplate.update(sql, toParamMap(product));
         if (update != 1) throw new RuntimeException("Nothing was updated!");
     }
@@ -88,7 +90,7 @@ public class ProductJdbcRepository implements ProductRepository {
 
     private static final RowMapper<Product> productRowMapper = (resultSet, i) -> {
         var productId = toUUID(resultSet.getBytes("product_id"));
-        var productName = resultSet.getString("product_name");
+        var productName = resultSet.getString("name");
         var category = new ProductCategory(resultSet.getInt("code"), resultSet.getString("category"));
         var totalAmount = resultSet.getInt("total_amount");
         var price = resultSet.getLong("price");
@@ -110,6 +112,6 @@ public class ProductJdbcRepository implements ProductRepository {
     private static final RowMapper<ProductCategory> categoryRowMapper = (resultSet, i) -> {
         var code = resultSet.getInt("code");
         var category = resultSet.getString("category");
-        return new ProductCategory(code,category);
+        return new ProductCategory(code, category);
     };
 }
