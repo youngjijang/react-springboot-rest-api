@@ -14,7 +14,7 @@ public class Order {
     private final LocalDateTime createdAt;
     private LocalDateTime updateAt;
 
-    public Order(UUID orderId, Email email, String address, List<OrderItem> orderItems ) {
+    public Order(UUID orderId, Email email, String address, List<OrderItem> orderItems) {
         this.orderId = orderId;
         this.email = email;
         this.orderItems = orderItems;
@@ -27,6 +27,7 @@ public class Order {
         this.orderId = orderId;
         this.email = email;
         this.orderItems = orderItems;
+        this.orderStatus = orderStatus;
         this.address = address;
         this.createdAt = createAt;
         this.updateAt = updateAt;
@@ -58,5 +59,14 @@ public class Order {
 
     public LocalDateTime getUpdateAt() {
         return updateAt;
+    }
+
+    public List<OrderItem> addOrderItems(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        return orderItems;
+    }
+
+    public void changeAddress(String address){
+        this.address = address;
     }
 }

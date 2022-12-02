@@ -4,6 +4,7 @@ import com.example.coffeeshop.model.Email;
 import com.example.coffeeshop.model.Order;
 import com.example.coffeeshop.model.OrderItem;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,16 +14,16 @@ public interface OrderRepository {
 
     Optional<Order> findById(UUID orderId);
 
-    Optional<Order> findByEmail(Email email);
+    List<Order> findByEmail(Email email);
 
-    Optional<Order> findByEmailAndAddress(Email email, String address);
+    Optional<Order> findAcceptOrderByEmailAndAddress(Email email, String address);
 
-    void insertOrderItem(UUID orderId, OrderItem orderItem);
+    OrderItem insertOrderItem(UUID orderId, OrderItem orderItem);
 
     void updateOrderItem(UUID orderId, OrderItem orderItem);
 
     void updateAddress(Order order);
 
-    void deleteOrder(Order order);
+    void deleteOrder(UUID orderId);
 
 }

@@ -10,6 +10,12 @@ import java.util.UUID;
 
 public interface ProductRepository {
 
+    ProductCategory createProductCategory(String category);
+
+    List<ProductCategory> findAllCategory();
+
+    ProductCategory findCategoryByString(String category);
+
     Product createProduct(Product product);
 
     void deleteProduct(UUID productId);

@@ -22,6 +22,25 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     @Override
+    public ProductCategory createProductCategory(String category) {
+        String sql = "INSERT INTO product_category(category) VALUES(:category)";
+        String findSql = "SELECT * FROM product_category WHERE category = :category ";
+        var update = jdbcTemplate.update(sql, Collections.singletonMap("category",category));
+        if (update != 1) throw new RuntimeException("Nothing was inserted!");
+        return jdbcTemplate.queryForObject(findSql,Collections.singletonMap("category",category),categoryRowMapper);
+    }
+
+    @Override
+    public List<ProductCategory> findAllCategory() {
+        return null;
+    }
+
+    @Override
+    public ProductCategory findCategoryByString(String category) {
+        return null;
+    }
+
+    @Override
     public Product createProduct(Product product) {
         String sql = "INSERT INTO products(product_id, name, category_code , price, total_amount, description)" +
                 "  VALUES (UUID_TO_BIN(:productId),:name,:category,:price ,:totalAmount , :description)";
@@ -81,10 +100,16 @@ public class ProductJdbcRepository implements ProductRepository {
         var paramMap = new HashMap<String, Object>();
         paramMap.put("productId", product.getProductId().toString().getBytes());
         paramMap.put("name", product.getName());
-        paramMap.put("category", product.getCategory().category());
+        paramMap.put("category", product.getCategory().code());
         paramMap.put("totalAmount", product.getTotalAmount());
         paramMap.put("price", product.getPrice());
         paramMap.put("description", product.getDescription());
         return paramMap;
     }
+
+    private static final RowMapper<ProductCategory> categoryRowMapper = (resultSet, i) -> {
+        var code = resultSet.getInt("code");
+        var category = resultSet.getString("category");
+        return new ProductCategory(code,category);
+    };
 }
