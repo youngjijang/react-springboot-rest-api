@@ -4,14 +4,13 @@ import React, {useState} from "react";
 export function Summary({items = [], onOrderSubmit}) {
   const totalPrice = items.reduce((prev, curr) => prev + (curr.price * curr.count), 0);
   const [order, setOrder] = useState({
-    email: "", address: "", postcode: ""
+    email: "", address: ""
   });
   // 입력이 될때마다 order value
   const handleEmailInputChanged = (e) => setOrder({...order, email: e.target.value})
   const handleAddressInputChanged = (e) => setOrder({...order, address: e.target.value})
-  const handlePostcodeInputChanged = (e) => setOrder({...order, postcode: e.target.value})
   const handleSubmit = (e) => {
-    if (order.address === "" || order.email === "" || order.postcode === "") {
+    if (order.address === "" || order.email === "" ) {
       alert("입력값을 확인해주세요!")
     } else {
       onOrderSubmit(order);
@@ -23,7 +22,7 @@ export function Summary({items = [], onOrderSubmit}) {
         <h5 className="m-0 p-0"><b>Summary</b></h5>
       </div>
       <hr/>
-      {items.map(v => <SummaryItem key={v.productId} count={v.count} productName={v.productName}/>)}
+      {items.map(v => <SummaryItem key={v.productId} count={v.count} productName={v.name}/>)}
       <form>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">이메일</label>
@@ -34,11 +33,6 @@ export function Summary({items = [], onOrderSubmit}) {
           <label htmlFor="address" className="form-label">주소</label>
           <input type="text" className="form-control mb-1" value={order.address} onChange={handleAddressInputChanged}
                  id="address"/>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="postcode" className="form-label">우편번호</label>
-          <input type="text" className="form-control" value={order.postcode} onChange={handlePostcodeInputChanged}
-                 id="postcode"/>
         </div>
         <div>당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</div>
       </form>

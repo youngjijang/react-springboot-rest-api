@@ -1,0 +1,47 @@
+body {
+    background: #ddd;
+}
+
+.card-2 {
+    margin: auto;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 1rem;
+    border: transparent;
+}
+
+.row {
+    margin: 0;
+}
+.search{
+    width : 130%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.title b {
+    font-size: 1.5rem
+}
+
+.col-2,
+.col {
+    padding: 0 1vh
+}
+
+img {
+    width: 3.5rem
+}
+
+hr {
+    margin-top: 1.25rem
+}
+.products {
+    width: 100%;
+}
+.products .price, .products .action {
+    line-height: 38px;
+}
+.products .action {
+    line-height: 38px;
+}
