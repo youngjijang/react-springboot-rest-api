@@ -3,12 +3,14 @@ package com.example.coffeeshop.model;
 import java.util.Objects;
 
 public record Email(String address) {
-    public Email(String address) {
-        this.address = address;
-    }
 
     private boolean checkAddress(String address) {
         return true;
+    }
+
+    @Override
+    public String address() {
+        return address;
     }
 
     @Override
@@ -24,4 +26,10 @@ public record Email(String address) {
         return Objects.hash(address);
     }
 
+    @Override
+    public String toString() {
+        return "Email{" +
+                "address='" + address + '\'' +
+                '}';
+    }
 }

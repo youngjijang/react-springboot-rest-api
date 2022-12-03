@@ -16,7 +16,7 @@ public interface ProductService {
 
     Optional<Product> findById(UUID productId);
 
-    List<Product> findByCategory(ProductCategory category);
+    List<Product> getByCategory(ProductCategory category);
 
     void deleteProduct(Product product);
 

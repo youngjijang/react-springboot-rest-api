@@ -37,7 +37,6 @@ public class ProductController {
 
     @PostMapping("/products")
     public String newProduct(@ModelAttribute CreateProductRequest createProductRequest){
-        log.info(createProductRequest.toString());
         String[] categoryInfo = createProductRequest.category().split(" ");
         ProductCategory category = new ProductCategory(Integer.parseInt(categoryInfo[0]),categoryInfo[1]);
         productService.createProduct(category,createProductRequest.name(), createProductRequest.price(),
