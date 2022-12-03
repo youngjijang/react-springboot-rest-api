@@ -87,6 +87,12 @@ public class ProductJdbcRepository implements ProductRepository {
         if (update != 1) throw new RuntimeException("Nothing was updated!");
     }
 
+    @Override
+    public List<Product> findAll() {
+        String sql = "SELECT p.product_id,p.name,p.price, p.total_amount,p.description, pc.code,pc.category FROM products p JOIN product_category pc on pc.code = p.category_code";
+        return jdbcTemplate.query(sql, productRowMapper);
+    }
+
 
     private static final RowMapper<Product> productRowMapper = (resultSet, i) -> {
         var productId = toUUID(resultSet.getBytes("product_id"));

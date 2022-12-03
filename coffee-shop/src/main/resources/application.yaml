@@ -1,2 +1,5 @@
 spring:
   datasource:
+    url: jdbc:mysql://localhost/coffee_shop
+    username: root
+    password : dudwl0804!

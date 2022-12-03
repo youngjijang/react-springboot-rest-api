@@ -68,10 +68,6 @@ class ProductJdbcRepositoryTest {
         embeddedMysql = anEmbeddedMysql(mysqlConfig)
                 .addSchema("test-shop_mgmt", classPathScript("schema.sql"))
                 .start();
-
-
-
-
     }
 
     @AfterAll

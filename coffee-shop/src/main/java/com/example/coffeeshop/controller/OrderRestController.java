@@ -1,18 +1,14 @@
 package com.example.coffeeshop.controller;
 
+import com.example.coffeeshop.dto.CreateOrderRequest;
 import com.example.coffeeshop.model.Email;
 import com.example.coffeeshop.model.Order;
-import com.example.coffeeshop.model.OrderStatus;
 import com.example.coffeeshop.service.OrderService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class OrderRestController {
 
     private final OrderService orderService;

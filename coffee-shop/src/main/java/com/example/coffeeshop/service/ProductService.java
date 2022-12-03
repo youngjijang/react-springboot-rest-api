@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductService {
-    Product createProduct(Product product);
+    Product createProduct(ProductCategory category,String name, long price, int amount, String description);
 
     Product updateTotalAmount(Product product);
 
@@ -19,4 +19,8 @@ public interface ProductService {
     List<Product> findByCategory(ProductCategory category);
 
     void deleteProduct(Product product);
+
+    List<Product> getAllProducts();
+
+    List<ProductCategory> getAllCategory();
 }

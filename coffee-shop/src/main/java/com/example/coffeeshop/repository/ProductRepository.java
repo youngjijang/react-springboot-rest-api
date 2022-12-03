@@ -27,4 +27,6 @@ public interface ProductRepository {
     void updateTotalAmount(Product product);
 
     void updateDescription(Product product);
+
+    List<Product> findAll();
 }

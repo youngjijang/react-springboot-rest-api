@@ -3,6 +3,7 @@ package com.example.coffeeshop.service;
 import com.example.coffeeshop.model.Product;
 import com.example.coffeeshop.model.ProductCategory;
 import com.example.coffeeshop.repository.ProductRepository;
+import jdk.jfr.Category;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public Product createProduct(ProductCategory category,String name, long price, int amount, String description ) {
+        Product product = new Product(UUID.randomUUID(),category,name,price,amount,description);
         return productRepository.createProduct(product);
     }
 
@@ -48,5 +50,15 @@ public class DefaultProductService implements ProductService {
     @Override
     public void deleteProduct(Product product) {
         productRepository.deleteProduct(product.getProductId());
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public List<ProductCategory> getAllCategory() {
+        return productRepository.findAllCategory();
     }
 }
