@@ -16,6 +16,8 @@ public interface OrderRepository {
 
     List<Order> findByEmail(Email email);
 
+    List<Order> findAll();
+
     Optional<Order> findAcceptOrderByEmailAndAddress(Email email, String address);
 
     OrderItem insertOrderItem(UUID orderId, OrderItem orderItem);
@@ -23,6 +25,8 @@ public interface OrderRepository {
     void updateOrderItem(UUID orderId, OrderItem orderItem);
 
     void updateAddress(Order order);
+
+    void updateOrderStatus(Order order);
 
     void deleteOrder(UUID orderId);
 

@@ -22,10 +22,16 @@ public class ProductRestController {
         this.productService = productService;
     }
 
+    /**
+     * category에 따른 상품 list
+     * categor가 없을 경우 모든 상품 list를 출력한다.
+     * @param category
+     * @return List<Product>
+     */
     @GetMapping("api/v1/products")
     public List<Product> productList(@RequestParam Optional<ProductCategory> category){
         return category
                 .map(productService::getByCategory)
-                .orElse(productService.getAllProducts()); // optional map처리가 존재 할때만 동작?
+                .orElse(productService.getAllProducts());
     }
 }

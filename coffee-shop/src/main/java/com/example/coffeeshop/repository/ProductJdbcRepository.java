@@ -94,6 +94,7 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
 
+
     private static final RowMapper<Product> productRowMapper = (resultSet, i) -> {
         var productId = toUUID(resultSet.getBytes("product_id"));
         var productName = resultSet.getString("name");

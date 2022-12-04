@@ -3,6 +3,7 @@ package com.example.coffeeshop.service;
 import com.example.coffeeshop.model.Email;
 import com.example.coffeeshop.model.Order;
 import com.example.coffeeshop.model.OrderItem;
+import com.example.coffeeshop.model.OrderStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +14,13 @@ public interface OrderService {
 
     List<Order> findOrderByEmail(Email email);
 
+    List<Order> findAllOrder();
+
     Optional<Order> findOrderById(UUID orderId);
 
-    void updateOrderAddress(Order order);
+    void updateOrderAddress(UUID orderId, String address);
 
-    void deleteOrder(Order order);
+    void updateOrderStatus(UUID orderId, OrderStatus status);
+
+    void deleteOrder(UUID orderId);
 }
