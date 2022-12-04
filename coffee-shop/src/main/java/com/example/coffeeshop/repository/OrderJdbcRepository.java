@@ -4,6 +4,7 @@ import com.example.coffeeshop.model.Email;
 import com.example.coffeeshop.model.Order;
 import com.example.coffeeshop.model.OrderItem;
 import com.example.coffeeshop.model.OrderStatus;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -33,7 +34,10 @@ public class OrderJdbcRepository implements OrderRepository {
 
         jdbcTemplate.update(orderSql, toOrderParamMap(order));
         order.getOrderItems()
-                .forEach(item -> jdbcTemplate.update(orderItemSql,toOrderItemParamMap(order.getOrderId(), item)));
+                .forEach(item -> {
+                    reduceStock(item.quantity(),item.productId());
+                    jdbcTemplate.update(orderItemSql, toOrderItemParamMap(order.getOrderId(), item));
+                });
         return order;
     }
 
@@ -66,6 +70,19 @@ public class OrderJdbcRepository implements OrderRepository {
     }
 
     @Override
+    public List<Order> findAll() {
+        String orderSql = "select * from orders";
+        String orderItem = "select * from order_items WHERE order_id = UUID_TO_BIN(:orderId)";
+        var orders = jdbcTemplate.query(orderSql,orderRowMapper);
+        orders.forEach(order -> {
+            var orderItems = jdbcTemplate.query(orderItem,
+                    Collections.singletonMap("orderId",order.getOrderId().toString().getBytes()),orderItemRowMapper);
+            orderItems.forEach(item -> order.getOrderItems().add(item));
+        });
+        return orders;
+    }
+
+    @Override
     public Optional<Order> findAcceptOrderByEmailAndAddress(Email email, String address) {
         String orderSql = "select * from orders WHERE order_status = :orderStatus AND email = :email AND address = :address";
         String orderItem = "select * from order_items WHERE order_id = UUID_TO_BIN(:orderId)";
@@ -85,6 +102,7 @@ public class OrderJdbcRepository implements OrderRepository {
     public OrderItem insertOrderItem(UUID orderId, OrderItem orderItem) {
         String sql = "INSERT INTO order_items(order_id, product_id, price, quantity, create_at) " +
                 "VALUES (UUID_TO_BIN(:orderId), UUID_TO_BIN(:productId), :price, :quantity, :createAt)";
+        reduceStock(orderItem.quantity(),orderItem.productId());
         jdbcTemplate.update(sql, toOrderItemParamMap(orderId,orderItem));
         return orderItem;
     }
@@ -93,6 +111,13 @@ public class OrderJdbcRepository implements OrderRepository {
     public void updateOrderItem(UUID orderId, OrderItem orderItem) {
         String sql = "UPDATE order_items SET quantity= :quantity WHERE order_id = UUID_TO_BIN(:orderId) and product_id = :UUID_TO_BIN(:productId)";
         var update = jdbcTemplate.update(sql, toOrderItemParamMap(orderId,orderItem));
+        if (update != 1) throw new RuntimeException("Nothing was updated!");
+    }
+
+    @Override
+    public void updateOrderStatus(Order order) {
+        String sql = "UPDATE orders SET order_status = :orderStatus WHERE order_id = UUID_TO_BIN(:orderId)";
+        var update = jdbcTemplate.update(sql, toOrderParamMap(order));
         if (update != 1) throw new RuntimeException("Nothing was updated!");
     }
 
@@ -109,6 +134,18 @@ public class OrderJdbcRepository implements OrderRepository {
         jdbcTemplate.update(sql, Collections.singletonMap("orderId", orderId.toString().getBytes()));
     }
 
+    private void reduceStock(int reduceAmount, UUID productId){
+        String sql = "UPDATE products SET total_amount = (total_amount-:reduceAmount) WHERE product_id = UUID_TO_BIN(:productId)";
+        try {
+           jdbcTemplate.update(sql, Map.of(
+                    "reduceAmount",reduceAmount,
+                    "productId",productId.toString().getBytes()
+            ));
+        }catch (DataAccessException e){
+            throw new RuntimeException("재고가 부족합니다.");
+        }
+    }
+
     private Map<String, Object> toOrderParamMap(Order order) {
         var paramMap = new HashMap<String, Object>();
         paramMap.put("orderId", order.getOrderId().toString().getBytes());
@@ -116,7 +153,7 @@ public class OrderJdbcRepository implements OrderRepository {
         paramMap.put("address", order.getAddress());
         paramMap.put("orderStatus", order.getOrderStatus().name());
         paramMap.put("createAt", order.getCreatedAt());
-        paramMap.put("updateAt", order.getUpdateAt());
+        paramMap.put("updateAt", order.getUpdatedAt());
         return paramMap;
     }
 
