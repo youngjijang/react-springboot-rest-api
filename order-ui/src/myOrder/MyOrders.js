@@ -6,11 +6,7 @@ import axios from "axios";
 function MyOrders(props) {
 
     const [email, setEmail] = useState();
-    const [orders, setOrders] = useState([
-        {orderId: 'uuid-1', productName: '콜롬비아 커피 1', category: '커피빈', price: 5000},
-        {orderId: 'uuid-2', productName: '콜롬비아 커피 2', category: '커피빈', price: 5000},
-        {orderId: 'uuid-3', productName: '콜롬비아 커피 3', category: '커피빈', price: 5000},
-    ]);
+    const [orders, setOrders] = useState([]);
 
 
     const handleEmailInputChanged = (e) => setEmail(e.target.value);
@@ -20,6 +16,11 @@ function MyOrders(props) {
         } else {
             axios.get(`http://localhost:8080/api/v1/myOrder?address=${email}`).then(
                 v => {
+                    console.log(v.data);
+                    if(v.data.length === 0){
+                        alert("이메일에 해당 하는 주문이 없습니다.");
+                        setEmail("");
+                    }
                     setOrders(v.data);
                 },
                 e => {

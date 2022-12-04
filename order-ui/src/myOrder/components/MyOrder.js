@@ -12,8 +12,8 @@ export function MyOrder(props) {
 
     return <React.Fragment>
         <div className="col">
-            <div className="row text-muted">{address}</div>
-            <div className="row">{createdAt}</div>
+            <div className="row text-muted">{createdAt}</div>
+            <div className="row">{address}</div>
         </div>
         <div className="col text-center price">{orderStatus}</div>
         <div className="col text-end action">

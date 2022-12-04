@@ -1,5 +1,5 @@
 import React from 'react';
-import {Product} from "../../components/Product";
+import {MyOrder} from "./MyOrder";
 
 export function MyOrderList({orders = []}) {
     return (
@@ -7,7 +7,7 @@ export function MyOrderList({orders = []}) {
             <ul className="list-group products">
                 {orders.map(v =>
                     <li key={v.orderId} className="list-group-item d-flex mt-3">
-                        <Product {...v}/>
+                        <MyOrder {...v}/>
                     </li>
                 )}
             </ul>

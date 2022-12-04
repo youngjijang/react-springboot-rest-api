@@ -47,8 +47,7 @@ function App() {
                     setItems([]);
                 },
                 e => {
-                    alert("서버 장애");
-                    console.error(e);
+                    alert("재고가 부족한 물품이 포함되어 있습니다.");
                 })
         }
     }
